@@ -1,7 +1,17 @@
-begin 
+begin
+SET active TO true;
 
-while P or (not Q and R) do;
-    ...
+do;
+    if P then;
+        SET active TO false;
+    else;
+        if not Q then;
+            if R then;
+                SET active TO false;
+            fi
+        fi
+    fi
+while active then;
 od
 
 end
