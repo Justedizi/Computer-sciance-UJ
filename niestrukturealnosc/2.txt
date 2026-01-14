@@ -1,21 +1,22 @@
 begin
 
-if not W1 then;
-    do;
-        I1
-        if W2 then;
-            I3
-        fi
-    while not W1 and W2 then;
-    od
-    
-    if not W2 then;
-        I2
-    fi
-fi
+I1
+SET active TO true;
 
-if W1 then;
-    I4
-fi
+do;
+    if W1 then;
+        I3
+        SET active TO false;
+    else;
+        if W2 then;
+            SET active TO false;
+        else;
+            I2
+        fi
+    fi
+while active then;
+od
+
+I4
 
 end
