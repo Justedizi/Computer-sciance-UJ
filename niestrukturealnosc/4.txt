@@ -1,0 +1,15 @@
+begin
+
+I1
+
+while not W1 and not W2 do;
+    I2
+od
+
+if W1 then;
+    I3
+fi
+
+I4
+
+end

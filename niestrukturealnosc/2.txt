@@ -1,0 +1,21 @@
+begin
+
+if not W1 then;
+    do;
+        I1
+        if W2 then;
+            I3
+        fi
+    while not W1 and W2 then;
+    od
+    
+    if not W2 then;
+        I2
+    fi
+fi
+
+if W1 then;
+    I4
+fi
+
+end

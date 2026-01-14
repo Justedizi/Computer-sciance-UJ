@@ -1,0 +1,18 @@
+begin 
+
+if W1 then;
+	if W2 then;
+		l3
+	else;
+		l2
+	fi
+	
+else;
+	if W3 then;
+		l2;
+	else;
+		l3
+	fi
+fi
+
+end

@@ -1,0 +1,7 @@
+begin 
+
+while P or (not Q and R) do;
+    ...
+od
+
+end
