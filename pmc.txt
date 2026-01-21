@@ -1,0 +1,41 @@
+# wybor wiekszej liczby
+
+mem[0]: load d 10;
+mem[1]: sub d 11;
+mem[2]: jneg c 6;
+mem[3]: load d 10;
+mem[4]: store d 12;
+mem[5]: stop;
+mem[6]: load d 11;
+mem[7]: store d 12;
+mem[8]: stop;
+...
+mem[10] = a;
+mem[11] = b;
+mem[12] = wynik;
+
+- przy skoku jneg tryb adresowania to "C"" poniewaz chccemy skoczyc do adresu an nie zawartosci komorki
+- pamietaj o tym aby dodawac stop na koncu 
+
+
+# obliczanie silni
+
+mem[0]: load d 11
+mem[1]: mult d 10
+mem[2]: store d 11
+mem[2]: load d 10
+mem[3]: sub d 12
+mem[4]: store d 10
+mem[4]: jzero c 9
+mem[5]: jump c 0 
+...
+mem[9]: stop
+mem[10] = n
+mem[11] = 1 # wynik
+mem[12] = 1 # zmienna kontrolujaca petle
+
+- pamietacj o tym aby zapisywac zmienne aby nie przepadaly 
+
+
+
+
