@@ -1,3 +1,28 @@
+#adresowanie posrednie (tak jakby wskaznik)
+
+mem[0]: load I 10
+
+- jest to rownoznaczne z mem[mem[10]]
+
+#adresowanie indeksowe (suma tablicy)
+
+mem[0] load d 20
+mem[1] sub c 1
+mem[2] jneg c 10 #poczatek petli 
+mem[3] store d 18
+mem[4] load n 21 # do odpowiedniego elmentu tablicy mem[ac + 21]
+mem[5] add d 19 # zakutlizuj wynik
+mem[6] store d 19
+mem[7] load d 18
+mem[8] sub c 1
+mem[9] jump c 2
+mem[10] stop
+
+mem[18]: ? indeks petli
+mem[19]: 0 - suma
+mem[20]: n
+mem[21 ...]: elementy tablicy
+
 # wybor wiekszej liczby
 
 mem[0]: load d 10;
@@ -23,18 +48,20 @@ mem[12] = wynik;
 mem[0]: load d 11
 mem[1]: mult d 10
 mem[2]: store d 11
-mem[2]: load d 10
-mem[3]: sub d 12
-mem[4]: store d 10
-mem[4]: jzero c 9
-mem[5]: jump c 0 
+mem[3]: load d 10
+mem[4]: sub d 12
+mem[5]: store d 10
+mem[6]: jzero c 9
+mem[7]: jump c 0 
+mem[8]: stop
 ...
-mem[9]: stop
 mem[10] = n
 mem[11] = 1 # wynik
 mem[12] = 1 # zmienna kontrolujaca petle
 
 - pamietacj o tym aby zapisywac zmienne aby nie przepadaly 
+
+
 
 
 
