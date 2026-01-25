@@ -20,9 +20,12 @@ d3 t5: m[ar] <- dr, tc <- 0
 
 #zadanie 3 
 
+
 t0: dr <- m[pc]
 t1: ar <- dr, pc <- pc +1 
 t2 d4: dr <- m[pc]
 t3 d4: ar <- dr, pc <- pc + 1
 t4: d4: dr <- m[ar]
 t5 d4: ac <- ac + dr, tc <- 0 
+
+#zadanie 4
