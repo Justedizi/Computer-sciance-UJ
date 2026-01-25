@@ -20,7 +20,7 @@ d3 t5: m[ar] <- dr, tc <- 0
 
 #zadanie 3 
 
-
+fafa
 t0: dr <- m[pc]
 t1: ar <- dr, pc <- pc +1 
 t2 d4: dr <- m[pc]
