@@ -1,0 +1,28 @@
+#zadanie 1
+
+t0: dr <- m[pc]
+t1: ir <- dr, pc <- pc + 1
+d4 t2: dr <- m[pc]
+d4 t3: ar <- dr, pc <- pc + 1
+d4 t4: dr <- m[ar]
+d4 t4: ac <- ac + dr, 
+d4 t5: dr <- ac
+d4 t6: m[ar] <- ac, tc <- 0
+
+#zadanie 2 
+
+t0: dr <- m[pc]
+t1: ir <- dr, pc <- pc + 1
+d3 t2: dr <- m[pc]
+d3 t3: ar <- dr, pc <- pc + 1
+d3 t4: dr <- ac 
+d3 t5: m[ar] <- dr, tc <- 0 
+
+#zadanie 3 
+
+t0: dr <- m[pc]
+t1: ar <- dr, pc <- pc +1 
+t2 d4: dr <- m[pc]
+t3 d4: ar <- dr, pc <- pc + 1
+t4: d4: dr <- m[ar]
+t5 d4: ac <- ac + dr, tc <- 0 
