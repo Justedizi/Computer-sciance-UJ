@@ -1,0 +1,42 @@
+# kod z jezyka c zamien na pmc
+int a[20];
+int b = 3;
+int i;
+for(i = 0; a[i] + b <= 3;i ++){
+    if(a[i] < b)  b = 2 * (b + a[i]);
+  }
+
+
+# --- 1. SPRAWDZENIE WARUNKU PĘTLI: a[i] + b <= 3 ---
+0:  load  @ 24      # Załaduj indeks 'i' do AC
+1:  load  + 25      # Załaduj a[i] (Index mode: MEM[25 + i])
+2:  add   @ 23      # Dodaj 'b'. AC = a[i] + b
+3:  store @ 22      # Zapisz sumę w zmiennej tymczasowej (temp)
+4:  load  $ 3       # Załaduj stałą 3
+5:  sub   @ 22      # Oblicz: 3 - (a[i] + b)
+6:  jneg  @ 20      # Jeśli wynik < 0 (czyli a[i]+b > 3), SKOK DO KONIEC
+
+# --- 2. SPRAWDZENIE IF: a[i] < b ---
+7:  load  @ 24      # Załaduj indeks 'i'
+8:  load  + 25      # Załaduj a[i]
+9:  sub   @ 23      # Oblicz: a[i] - b
+10: jneg  @ 12      # Jeśli < 0 (PRAWDA), skocz do CIAŁA IF
+
+# --- 3. ELSE / POMINIĘCIE (Warunek a[i] < b niespełniony) ---
+11: jump  @ 16      # Skocz do inkrementacji (omiń ciało IF)
+
+# --- 4. CIAŁO IF: b = 2 * (b + a[i]) ---
+12: load  @ 24      # Załaduj 'i'
+13: load  + 25      # Załaduj a[i]
+14: add   @ 23      # Dodaj 'b'
+15: mult  $ 2       # Pomnóż przez 2
+16: store @ 23      # Zapisz nowy wynik w 'b'
+
+# --- 5. INKREMENTACJA: i++ ---
+17: load  @ 24      # Załaduj 'i'
+18: add   $ 1       # Dodaj 1
+19: store @ 24      # Zapisz nowe 'i'
+20: jump  @ 0       # Wróć na początek pętli
+
+# --- KONIEC ---
+21: stop            # Koniec programu (adres skoku z linii 6)
