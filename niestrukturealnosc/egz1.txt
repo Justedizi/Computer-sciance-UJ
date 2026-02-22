@@ -1,0 +1,34 @@
+A
+r1 = 1
+r2 = 1
+
+while r1:
+
+if B:
+    E 
+    r2 = 1
+    while r2:
+      if C:
+        r2 = 0
+        A
+      else:
+        if S:
+          r1 = 0
+          r2 = 0
+        else:
+          E
+else:
+  r2 = 1
+  while r2:
+    if c:
+      r2 = 0
+      A
+    else:
+      if S:
+        r1 = 0
+        r2 = 0
+      else:
+        E
+    
+    
+

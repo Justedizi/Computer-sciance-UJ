@@ -1,0 +1,17 @@
+m 0 # numer pierwszej komorki tablicy a 
+m 1 # number pierwszej komorki tablicy tablicy b  
+m 2 # const dlugosc tablicy
+m 3 # dane 1
+m 4 # 
+m 5 #
+m 6 load @ 2
+m 7 sub @ 3
+m 7 add @ 0
+m 8 store $ 4
+m 8 load & 4
+m 9 store $ 4
+m 10 load & 3
+m 11 add @ 1 
+m 12 store $ 5
+m 12 load @ 5
+m 14 store $ 4 

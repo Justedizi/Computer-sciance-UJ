@@ -1,96 +1,113 @@
-<RightMouse>import re
+import re
+
 
 def infix_to_rpn_ultimate(expression):
     # --- 1. KONFIGURACJA (PRIORYTETY I TYPY) ---
-    
+
     # Słownik priorytetów (im wyższa liczba, tym ważniejsze działanie)
     # Zgodnie z zasadą ze slajdów: operatory o niższej krotności (unarne) mają wyższy priorytet.
     precedence = {
-        '(': 0,
-        '+': 1, '-2': 1,             # Dodawanie, Odejmowanie (binarne)
-        '*': 2, '/': 2, ':': 2,      # Mnożenie, Dzielenie
-        'log': 3,                    # Logarytm jako operator infiksowy (a log b)
-        '^': 4,                      # Potęgowanie
+        "(": 0,
+        "+": 1,
+        "-2": 1,  # Dodawanie, Odejmowanie (binarne)
+        "*": 2,
+        "/": 2,
+        ":": 2,  # Mnożenie, Dzielenie
+        "log": 3,  # Logarytm jako operator infiksowy (a log b)
+        "^": 4,  # Potęgowanie
         # Funkcje i operatory unarne (najwyższy priorytet)
-        '-1': 5,                     # Minus unarny (negacja)
-        'sin': 5, 'cos': 5, 'ln': 5, 'sqrt1': 5, 
-        'sqrt2': 5, 'min': 5, 'max': 5
+        "-1": 5,  # Minus unarny (negacja)
+        "sin": 5,
+        "cos": 5,
+        "ln": 5,
+        "sqrt1": 5,
+        "sqrt2": 5,
+        "min": 5,
+        "max": 5,
     }
 
     # Zbiór operatorów łącznych prawostronnie (dla potęgowania a^b^c -> a^(b^c))
-    right_associative = {'^', '-1'}
+    right_associative = {"^", "-1"}
 
     # Zbiór nazw, które traktujemy jak funkcje f(arg1, arg2...)
-    functions = {'sin', 'cos', 'ln', 'sqrt1', 'sqrt2', 'min', 'max'}
+    functions = {"sin", "cos", "ln", "sqrt1", "sqrt2", "min", "max"}
 
     # --- 2. TOKENIZACJA (PODZIAŁ NA KAWAŁKI) ---
     # Usuwamy spacje i dzielimy napis na: słowa, liczby, lub znaki specjalne
     expression = expression.replace(" ", "")
     # Wzorzec wyłapuje: liczby, słowa (np. sin, a, log), oraz symbole operatorów
-    tokens = re.findall(r'[a-zA-Z][a-zA-Z0-9]*|\d+|[:+\-*/()^,]', expression)
+    tokens = re.findall(r"[a-zA-Z][a-zA-Z0-9]*|\d+|[:+\-*/()^,]", expression)
 
-    output = []   # Kolejka wyjściowa (ONP)
-    stack = []    # Stos operatorów
-    
+    output = []  # Kolejka wyjściowa (ONP)
+    stack = []  # Stos operatorów
+
     # Flaga: czy spodziewamy się teraz liczby/argumentu?
     # True na początku, po '(', po przecinku i po operatorach.
     # Służy do odróżnienia minusa unarnego (-1) od binarnego (-2).
-    expect_operand = True 
+    expect_operand = True
 
     for token in tokens:
         # A. Jeśli to LICZBA lub ZMIENNA (ale nie nazwa funkcji ani operatora 'log')
-        if token.isalnum() and token not in functions and token != 'log':
+        if token.isalnum() and token not in functions and token != "log":
             output.append(token)
             expect_operand = False  # Po liczbie spodziewamy się operatora
-        
+
         # B. Jeśli to FUNKCJA (np. sin, min, ln, sqrt2)
         elif token in functions:
             stack.append(token)
-            expect_operand = True   # Po nazwie funkcji spodziewamy się '('
-            
+            expect_operand = True  # Po nazwie funkcji spodziewamy się '('
+
         # C. Jeśli to PRZECINEK (separator argumentów w min/max/sqrt2)
-        elif token == ',':
+        elif token == ",":
             # Zdejmujemy operatory aż do nawiasu '(' (ale go nie usuwamy)
-            while stack and stack[-1] != '(':
+            while stack and stack[-1] != "(":
                 output.append(stack.pop())
-            expect_operand = True   # Po przecinku musi być kolejny argument
-            
+            expect_operand = True  # Po przecinku musi być kolejny argument
+
         # D. Jeśli to LEWY NAWIAS
-        elif token == '(':
+        elif token == "(":
             stack.append(token)
             expect_operand = True
-            
+
         # E. Jeśli to PRAWY NAWIAS
-        elif token == ')':
+        elif token == ")":
             # Zdejmuj wszystko do lewego nawiasu
-            while stack and stack[-1] != '(':
+            while stack and stack[-1] != "(":
                 output.append(stack.pop())
-            
-            stack.pop() # Usuń '(' ze stosu
-            
+
+            stack.pop()  # Usuń '(' ze stosu
+
             # Jeśli na szczycie stosu została funkcja (np. min, sin), zdejmij ją teraz
             if stack and stack[-1] in functions:
                 output.append(stack.pop())
-                
+
             expect_operand = False
 
         # F. Jeśli to OPERATOR (+, -, *, :, log, ^)
         else:
             op_symbol = token
-            
+
             # Detekcja minusa:
-            if token == '-':
+            if token == "-":
                 if expect_operand:
-                    op_symbol = '-1' # Unarny (negacja), bo spodziewaliśmy się liczby
+                    op_symbol = "-1"  # Unarny (negacja), bo spodziewaliśmy się liczby
                 else:
-                    op_symbol = '-2' # Binarny (odejmowanie), bo była liczba wcześniej
-            
+                    op_symbol = "-2"  # Binarny (odejmowanie), bo była liczba wcześniej
+
             # Algorytm "Stacja Rozrządowa" (Shunting Yard)
-            while (stack and stack[-1] != '(' and
-                   (precedence.get(stack[-1], 0) > precedence.get(op_symbol, 0) or
-                   (precedence.get(stack[-1], 0) == precedence.get(op_symbol, 0) and op_symbol not in right_associative))):
+            while (
+                stack
+                and stack[-1] != "("
+                and (
+                    precedence.get(stack[-1], 0) > precedence.get(op_symbol, 0)
+                    or (
+                        precedence.get(stack[-1], 0) == precedence.get(op_symbol, 0)
+                        and op_symbol not in right_associative
+                    )
+                )
+            ):
                 output.append(stack.pop())
-            
+
             stack.append(op_symbol)
             expect_operand = True
 
@@ -99,6 +116,7 @@ def infix_to_rpn_ultimate(expression):
         output.append(stack.pop())
 
     return " ".join(output)
+
 
 # --- TESTOWANIE ---
 
@@ -126,4 +144,6 @@ print("\n--- Test 4: Mieszane minusy ---")
 expr4 = "-a + (b - c)"
 print(f"Wejście: {expr4}")
 print(f"Wynik:   {infix_to_rpn_ultimate(expr4)}")
-# Oczekiwane: a -1 b c -2 +
+
+expression = "cos(a)^(b:c) / ( sqrt1( log(d, (e/f)*(g*h)) / k ) + sqrt2(-(n-p), m) )"
+print(infix_to_rpn_ultimate(expression))
