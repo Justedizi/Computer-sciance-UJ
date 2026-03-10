@@ -1,0 +1,19 @@
+A
+r1 = 1
+r2 = 1
+while r1:
+  if b:
+    r1 = 0
+  else:
+    r2 = 1
+    while r2:
+      C 
+      if d:
+        r1 = 0
+        r2 = 0
+      else:
+        if E:
+          A
+          r2 = 0
+        
+
