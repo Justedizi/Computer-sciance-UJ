@@ -1,5 +1,0 @@
-To jest pierwszy wiersz tekstu.
-Drugi wiersz ma   wiele   spacji.
-Trzeci wiersz z liczbami: 123 456 789
-
-Pusty wiersz powyzej, a teraz koniec.

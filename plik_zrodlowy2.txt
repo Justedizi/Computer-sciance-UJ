@@ -1,5 +1,0 @@
-Linia pierwsza
-Linia druga
-Linia trzecia
-Linia czwarta
-Linia piata
