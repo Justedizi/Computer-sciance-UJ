@@ -1,97 +1,117 @@
 #include <iostream>
 
 struct UpperMatrix {
-  int **rows;    // Tablica wskaźników na wiersze
-  int *rowSizes; // Tablica przechowująca długość każdego wiersza
-  int rowCount;  // Liczba wierszy
-} rix;
+  int **rows = nullptr;    // Tablica wskaźników na wiersze
+  int *rowSizes = nullptr; // Tablica przechowująca długości wierszy
+  int rowCount = 0;        // Liczba wierszy
 
-void PrintMatrix(UpperMatrix *m) {
-  for (int i = 0; i < m->rowCount; i++) {
-    for (int j = 0; j < m->rowSizes[i]; j++) {
-      printf("%3d ", m->rows[i][j]);
+  void AddRow(int *newData, int size) {
+    int **newRows = new int *[rowCount + 1];
+    int *newRowSizes = new int[rowCount + 1];
+
+    newRows[0] = new int[size];
+    for (int i = 0; i < size; i++)
+      newRows[0][i] = newData[i];
+    newRowSizes[0] = size;
+
+    for (int i = 0; i < rowCount; i++) {
+      newRows[i + 1] = rows[i];
+      newRowSizes[i + 1] = rowSizes[i];
     }
-    printf("\n");
-  }
-}
 
-// 1. AddRow - dodaje nowy, najdłuższy wiersz na górę
-void AddRow(UpperMatrix *m, int *newElements, int size) {
-  m->rowCount++;
-  m->rows = realloc(m->rows, m->rowCount * sizeof(int *));
-  m->rowSizes = realloc(m->rowSizes, m->rowCount * sizeof(int));
+    delete[] rows;
+    delete[] rowSizes;
 
-  // Przesuwamy wiersze w dół, by zrobić miejsce na indeksie 0
-  for (int i = m->rowCount - 1; i > 0; i--) {
-    m->rows[i] = m->rows[i - 1];
-    m->rowSizes[i] = m->rowSizes[i - 1];
+    rows = newRows;
+    rowSizes = newRowSizes;
+    rowCount++;
   }
 
-  // Wstawiamy nowy wiersz na początek
-  m->rows[0] = malloc(size * sizeof(int));
-  for (int i = 0; i < size; i++)
-    m->rows[0][i] = newElements[i];
-  m->rowSizes[0] = size;
-}
+  void AddColumn(int *colData) {
+    for (int i = 0; i < rowCount; i++) {
+      int oldSize = rowSizes[i];
+      int *newRow = new int[oldSize + 1];
 
-// 2. RemoveRow - usuwa pierwszy wiersz
-void RemoveRow(UpperMatrix *m) {
-  if (m->rowCount == 0)
-    return;
-
-  free(m->rows[0]); // zwalniamy pamięć pierwszego wiersza
-
-  for (int i = 0; i < m->rowCount - 1; i++) {
-    m->rows[i] = m->rows[i + 1];
-    m->rowSizes[i] = m->rowSizes[i + 1];
-  }
-
-  m->rowCount--;
-  m->rows = realloc(m->rows, m->rowCount * sizeof(int *));
-  m->rowSizes = realloc(m->rowSizes, m->rowCount * sizeof(int));
-}
-
-// 3. RemoveColumn - usuwa pierwszą kolumnę (pierwszy element każdego wiersza)
-void RemoveColumn(UpperMatrix *m) {
-  for (int i = 0; i < m->rowCount; i++) {
-    if (m->rowSizes[i] > 0) {
-      // Przesuwamy elementy wewnątrz wiersza w lewo
-      for (int j = 0; j < m->rowSizes[i] - 1; j++) {
-        m->rows[i][j] = m->rows[i][j + 1];
+      newRow[0] = colData[i];
+      for (int j = 0; j < oldSize; j++) {
+        newRow[j + 1] = rows[i][j];
       }
-      m->rowSizes[i]--;
-      // Opcjonalnie zmniejszamy pamięć wiersza
-      m->rows[i] = realloc(m->rows[i], m->rowSizes[i] * sizeof(int));
+
+      delete[] rows[i];
+      rows[i] = newRow;
+      rowSizes[i] = oldSize + 1;
     }
   }
-  // Jeśli ostatni wiersz stał się pusty - usuwamy go całkowicie
-  if (m->rowCount > 0 && m->rowSizes[m->rowCount - 1] == 0) {
-    m->rowCount--;
+
+  // 3. RemoveRow - Usuń pierwszy wiersz
+  void RemoveRow() {
+    if (rowCount == 0)
+      return;
+
+    delete[] rows[0]; // Kasujemy dane pierwszego wiersza
+
+    int **newRows = new int *[rowCount - 1];
+    int *newRowSizes = new int[rowCount - 1];
+
+    for (int i = 1; i < rowCount; i++) {
+      newRows[i - 1] = rows[i];
+      newRowSizes[i - 1] = rowSizes[i];
+    }
+
+    delete[] rows;
+    delete[] rowSizes;
+
+    rows = newRows;
+    rowSizes = newRowSizes;
+    rowCount--;
   }
-}
+
+  // 4. RemoveColumn - Usuń pierwszy element z każdego wiersza
+  void RemoveColumn() {
+    for (int i = 0; i < rowCount; i++) {
+      if (rowSizes[i] <= 1)
+        continue; // Zabezpieczenie przed pustym wierszem
+
+      int *newRow = new int[rowSizes[i] - 1];
+      for (int j = 1; j < rowSizes[i]; j++) {
+        newRow[j - 1] = rows[i][j];
+      }
+
+      delete[] rows[i];
+      rows[i] = newRow;
+      rowSizes[i]--;
+    }
+  }
+
+  void PrintMatrix() {
+    for (int i = 0; i < rowCount; i++) {
+      for (int s = 0; s < i; s++)
+        std::cout << "  "; // Wcięcie
+      for (int j = 0; j < rowSizes[i]; j++) {
+        std::cout << rows[i][j] << " ";
+      }
+      std::cout << "\n";
+    }
+    std::cout << "---\n";
+  }
+};
 
 int main() {
-  UpperMatrix m = {NULL, NULL, 0};
+  UpperMatrix m;
 
-  int r1[] = {10};
-  AddRow(&m, r1, 1);
+  int r1[] = {1};
+  m.AddRow(r1, 1);
 
-  int r2[] = {20, 21};
-  AddRow(&m, r2, 2);
+  int r2[] = {2, 3};
+  m.AddRow(r2, 2);
 
-  int r3[] = {30, 31, 32};
-  AddRow(&m, r3, 3);
+  std::cout << "Start:\n";
+  m.PrintMatrix();
 
-  printf("Macierz po dodaniu 3 wierszy:\n");
-  PrintMatrix(&m);
-
-  printf("Usuwam pierwsza kolumne:\n");
-  RemoveColumn(&m);
-  PrintMatrix(&m);
-
-  printf("Usuwam pierwszy wiersz:\n");
-  RemoveRow(&m);
-  PrintMatrix(&m);
+  int col[] = {9, 8};
+  std::cout << "Dodaj kolumne [9, 8]:\n";
+  m.AddColumn(col);
+  m.PrintMatrix();
 
   return 0;
 }
