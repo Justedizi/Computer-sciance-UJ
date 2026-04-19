@@ -3,5 +3,5 @@
 
 void Emplace(char *p, int *n) {
   *n = 0;
-  Insert(p, n);
+  insert(p, n);
 }

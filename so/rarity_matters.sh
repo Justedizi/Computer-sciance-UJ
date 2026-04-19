@@ -1,7 +1,7 @@
-
+#KRZYSZTOF PIEHCAL
 #!/bin/bash
-#KRZYSZTOF PIECHAL
-declare -A counter #cos w stylu dicta 
+
+declare -A counter #cos w stylu dicta
 declare -a order
 
 while read -r id; do

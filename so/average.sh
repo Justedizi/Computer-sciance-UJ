@@ -1,3 +1,4 @@
+#KRZYSZTOF PIECHAL
 #!/bin/bash
 
 sum=0
@@ -21,7 +22,7 @@ echo "$avg"
 
 sum_of_squares=0
 for x in "${nums[@]}"; do
-  diff=$((x - srednia))
+  diff=$((x - avg))
   square=$((diff * diff))
   sum_of_squares=$((sum_of_squares + square))
 done

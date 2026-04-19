@@ -1,3 +1,4 @@
+#KRZYSZTOF PIECHAL
 #!/bin/bash
 
 read -r n
@@ -12,4 +13,4 @@ for ((i = 1; i <= n; i++)); do
 
   a=$b
   b=$suma
-done 
+done
