@@ -49,6 +49,9 @@ def max_subarray_kadne(arr: list[int]) -> tuple[list[int], int]:
     return (arr[start : end + 1], max_val)
 
 
+kadane = lambda a: list[] = 
+
+
 tests: list[list[int]] = [
     [1, 2, 4, -4, 5],
     [12, -4, 45, -2, 42, -1, 10, 15, -13],
