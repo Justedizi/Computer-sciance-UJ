@@ -121,4 +121,61 @@ void handle_event(Event e) {
 // since c23 you can force their type to avoid name colisions
 enum Color : uint8_t { RED, GREEN, BLUE }; // C23 feature
 
+// lifetime good example
+
+int *foo(void) {
+  int a = 17; // a has automatic storage duration
+  return &a;
+} // lifetime of a ends
+int test2(void) {
+  int *p = foo(); // p points to an object past lifetime ("dangling pointer")
+  int n = *p;     // undefined behavior
+}
+
+// storage duration vs lifetime
+// lifetime is the time where object is guarented to exist
+// storage duration how long memory i reserved : automatic, static, thread etc
+
+// volotile keyword tell compiler that varible can be changed at any time form
+// outside code currnetly anaiysing compiler wont be able to aply lots of
+// optimizattions for every time value is used it has to be retrived for memory
+// not cpu register witch is redundent and slower
+
+volatile int keep_running = 1;
+// whitout volatile it can cause infinite loop
+// this is refers to cpu interupts
+
+void handle_interrupt() {
+  keep_running = 0; // Triggered by a button press or timer
+}
+
+void infinite_loop() {
+  while (keep_running) {
+    // Do work...
+  }
+}
+// AS IF RULE - allows any and all code transformations that do not change the
+// observable behavior of the program.
+
+// DATA RACES when two or moore theaads acces same memory location concurenty
+// to prevent this you can either use atomic types or mutexes
+// MUTEXES - mutual exclusion it acts as gatekeaper to ensure that only one
+// thread can acces critical section
+
+#include <threads.h> // multihteeading libery
+
+mtx_t lock;
+int shared_resource = 0;
+
+int thread_func(void *arg) {
+  mtx_lock(&lock);
+
+  // START CRITICAL SECTION
+  shared_resource++;
+  // END CRITICAL SECTION
+
+  mtx_unlock(&lock);
+  return 0;
+}
+
 int main() { return 0; }
