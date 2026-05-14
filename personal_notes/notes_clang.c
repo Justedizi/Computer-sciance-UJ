@@ -178,4 +178,86 @@ int thread_func(void *arg) {
   return 0;
 }
 
+// storage class specifiers - auto, register, static, extern, thread_local
+// STORAGE DURATION - how long memory is reserved for a variable
+// LINKAGE - how names are shared across translation units (files)
+
+// AUTO
+void func() {
+  int auto a = 10; // redundant auto means that varible is alocated in the stack
+                   // when {} starts and ends when {} ends it is deallocated
+                   // AUTO is derault for local variables
+}
+
+// REGISTER
+void func2() { int register b = 20; }
+// tell she comiler to store this in cpu register for
+// faster access but modern compilers ignore this hint
+// it is redundant and not recommended to use since modern compilers are good at
+// optimizing variable storage
+
+// STATIC
+static void fun() { // static function is gonna only be visible in this file
+                    // acts like a private function in other languages
+  static int val = 10;
+  // val is gona be remembered between function calls and only initialized once
+}
+static int local_to_file =
+    42; // this variable is only visible in this file acts like a private
+        // variable in other languages
+
+// EXTERN
+extern int someVal = 10; // tells the comiler that this variable is defined in
+                         // another file and can be used here used in header
+                         // files to share variables between files
+// LOCAL_THREAD
+thread_local int requests_handled =
+    0; // gives every thread its own copy of this variable prior to c23
+       // _Thread_local was used for this purpose
+
+void *worker_thread(void *arg) {
+  requests_handled++;
+  // If you have 4 threads, you have 4 distinct 'requests_handled' variables.
+  // Thread A modifying its copy does NOT affect Thread B's copy.
+}
+
+// RESTRICT KEYWORD tells the compiler that this valude will be the only way to
+// access the data it points to this allows for better optimization since
+// compiler can assume that no other pointer will modify the data since without
+// it technicaly a and b and result cant point to same value and then everything
+// will get buggy (IT IS EXCLUTSIVE FOR POINTERS ONLY AND IT DOSENT EXITS IN
+// CPP)
+void update_values(int *restrict a, int *restrict b, int *restrict result) {
+  *result += *a;
+  *result += *b;
+}
+// VOALTILE - tells the compiler that the value of this variable can change at
+// any time so it should be featured from memory every time it is accessed and
+// not cached in a register this is important for variables that can be modified
+// by other threads or hardware interrupts
+
+void example() {
+  volatile int flag = 0; // without volative compiler might optimize this to an
+                         // infinite loop since it thinks flag will never change
+  while (!flag) {
+    // do something
+  }
+}
+
+// _GENERIC - allows you to write type-generic macros that can work with
+// different (function oveloading in C)
+
+void print_int(int x) { printf("Integer: %d\n", x); }
+void print_float(float x) { printf("Float: %f\n", x); }
+void print_string(char *x) { printf("String: %s\n", x); }
+
+// The _Generic macro acts as a compile-time switch statement based on TYPE
+#define print(X)                                                               \
+  _Generic((X),                                                                \
+      int: print_int,                                                          \
+      float: print_float,                                                      \
+      char *: print_string,                                                    \
+      default: print_int)(X) // Notice the (X) at the end, which actually calls
+                             // the selected function
+
 int main() { return 0; }
