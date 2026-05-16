@@ -97,7 +97,7 @@ print(nums[#nums]) -- prints last elemt
 
 local numbers = { 13, 41254, 12, 13 }
 table.sort(numbers, function(num1, num2)
-	return num1 > 2 * num2 % 100
+	return (num1 > 2 * num2)
 end)
 
 --adding values
@@ -108,7 +108,7 @@ table.insert(nums, 3, "aga")
 
 function dispaly_age(age)
 	age = age or 10 -- if its nil it becomes 18
-	print("i am " .. age .. "years old")
+	print("i am " .. age .. " years old")
 end
 
 --function asigmetn to varible diffrent syntax
@@ -117,7 +117,129 @@ local sum_and_diff = function(n1, n2)
 	return n1 + n2, n1 - n2
 end
 
-local n1, n2 = sum_and_diff(145, 12)
-print(n1, n2)
+local _, n2 = sum_and_diff(145, 12) --we can skip one varible with _
+print(n2)
+
+--function with unkonwn parameters
+
+local function func2(...)
+	print(...)
+end
+
+local function sum(...)
+	local sum = 0
+	for i, v in pairs({ ... }) do
+		print(i, v)
+		sum = sum + v
+	end
+	return "sum is: " .. sum
+end
+
+print(func2(1, 24, 3))
+print(sum(1, 2, 3, 4, 5))
 
 dispaly_age(14)
+
+--corutines are like threads but they are not paralel they are more like cooperative multitasking
+local routine_1 = coroutine.create(function()
+	for i = 0, 10, 1 do
+		print("rotuine 1 : " .. i)
+		if i == 5 then
+			coroutine.yield() -- this will pause the routine and we can resume it later
+		end
+	end
+end)
+
+local routine_2 = coroutine.create(function()
+	for i = 1, 13, 1 do
+		print("rotine: 2 " .. i)
+	end
+end)
+
+coroutine.resume(routine_1) -- this will start the routine 1,2 ... 5 ans suspend
+print(coroutine.status(routine_1))
+coroutine.resume(routine_2)
+coroutine.resume(routine_1) -- this will resume the routine from where it was paused
+print(coroutine.status(routine_1)) -- 6,7, .. 10 dead
+
+-- the os module
+
+--time
+local past = os.time({ year = 2000, month = 1, day = 1 })
+print(os.time() - past)
+
+--env varibles
+
+print(os.getenv("HOME")) --home/justedizi/
+--execting bash commands
+os.execute("echo hello world") -- this will execute the command in the terminal
+
+-- custom mouule
+local mod = require("custom_module")
+print(mod.sum(122, 2))
+
+-- OOP in lua
+
+--objects are tables in lua
+
+local obj = { name = "jack", age = 19, list = { time = "14124", random = { 2, 2, 4 } } }
+
+print(obj.name .. " " .. obj.list.random[1])
+
+--functions can also be part of objects
+-- self can be used to refer to the object itself
+local function pet(n)
+	return {
+		name = n,
+		age = 12.4,
+		hungry = true,
+		fed = function(self)
+			self.hungry = false
+		end,
+	}
+end
+
+local buddy = pet("buddy")
+print(buddy.hungry)
+buddy:fed() -- methodand self are used together like this
+print(buddy.hungry)
+
+--inhreitence can be achieved with metatables
+
+local function Dog(bread)
+	local dog = pet("doggo")
+	dog.breed = bread
+	dog.bark = function(self, sound)
+		print(self.breed .. " woof woof " .. sound)
+	end
+	dog.isLoyal = function(self)
+		return self.breed[0] > "d"
+	end
+
+	return dog
+end
+
+buddy = Dog("labrador")
+buddy:bark("afa") -- this will print woof woof
+
+--metatables are tables that can change the behavior of other tables
+
+local metaTable = {
+	__add = function(table1, table2)
+		local result = {}
+		for key, value in pairs(table1) do
+			result[key] = value
+		end
+		for key, value in pairs(table2) do
+			result[key] = value
+		end
+		return result
+	end,
+}
+
+local tab1 = { 23, 5, 5 }
+setmetatable(tab1, metaTable)
+
+print(tab1 + { 123, 12 })
+
+-- look at luaRocks to find lua packages and libraries
