@@ -33,6 +33,7 @@ public:
     rowCount = 0;
   }
   // konstruktor kopiujacy
+  // zmienne marix, rowSizes naleza do nowego obieku a other to stary obiekt !!!
   Matrix(const Matrix &other) {
     rowCount = other.rowCount;
 
@@ -45,14 +46,14 @@ public:
     matrix = new int *[rowCount];
     rowSizes = new unsigned short[rowCount];
 
-    unsigned short i, j, currentW;
+    unsigned short i, j, curr;
     for (i = 0; i < rowCount; i++) {
-      currentW = *(other.rowSizes + i);
-      *(rowSizes + i) = currentW;
+      curr = *(other.rowSizes + i);
+      *(rowSizes + i) = curr;
 
-      *(matrix + i) = new int[currentW];
+      *(matrix + i) = new int[curr];
 
-      for (j = 0; j < currentW; j++) {
+      for (j = 0; j < curr; j++) {
         *(*(matrix + i) + j) = *(*(other.matrix + i) + j);
       }
     }
@@ -77,14 +78,14 @@ public:
     matrix = new int *[rowCount];
     rowSizes = new unsigned short[rowCount];
 
-    unsigned short i, j, currentW;
+    unsigned short i, j, curr;
     for (i = 0; i < rowCount; i++) {
-      currentW = *(other.rowSizes + i);
-      *(rowSizes + i) = currentW;
+      curr = *(other.rowSizes + i);
+      *(rowSizes + i) = curr;
 
-      *(matrix + i) = new int[currentW];
+      *(matrix + i) = new int[curr];
 
-      for (j = 0; j < currentW; j++) {
+      for (j = 0; j < curr; j++) {
         *(*(matrix + i) + j) = *(*(other.matrix + i) + j);
       }
     }
